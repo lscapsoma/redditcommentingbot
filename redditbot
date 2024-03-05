@@ -1,0 +1,49 @@
+import random
+import re
+from playwright.sync_api import Page, expect
+
+
+
+with open("output.txt", "r", encoding="utf-8") as file:
+    # Read the lines of the file and store them in a list
+    lines = file.readlines()
+
+# Strip newline characters from each line and create a list
+output_list = [line.strip() for line in lines]
+
+
+with open("comments.txt", "r", encoding="utf-8") as file:
+    # Read the lines of the file and store them in a list
+    zan = file.readlines()
+
+# Strip newline characters from each line and create a list
+zan_list = [linez.strip() for linez in zan]
+
+
+def test_has_title(page: Page):
+
+    x = 22
+    page.goto("https://reddit.com")
+    page.get_by_role("link", name="Log In").click()
+    page.locator("input[name=\"username\"]").click()
+    page.locator("input[name=\"username\"]").fill("x")
+    page.locator("input[name=\"password\"]").click()
+    page.locator("input[name=\"password\"]").fill("x!")
+    page.get_by_role("button", name="Log In").click()
+
+    while (x < 147):
+       
+        y = random.randint(5000, 12000)
+        zy = random.randint(5000, 12000)
+
+        page.wait_for_timeout(y)
+        page.goto(output_list[x])
+        page.get_by_role("textbox").click()
+        page.get_by_role("textbox").fill(zan_list[x])
+        page.get_by_role("button", name="Comment", exact=True).click()
+        page.wait_for_timeout(zy)
+
+        x = x + 1
+
+    # ---------------------
+    
