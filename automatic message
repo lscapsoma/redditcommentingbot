@@ -1,0 +1,61 @@
+import random
+import re
+from playwright.sync_api import Page,  expect 
+
+
+with open("usernames.txt", "r", encoding="utf-8") as file:
+    # Read the lines of the file and store them in a list
+    lines = file.readlines()
+# Strip newline characters from each line and create a list
+usernames = [line.strip() for line in lines]
+with open("comments.txt", "r", encoding="utf-8") as file:
+    # Read the lines of the file and store them in a list
+    zan = file.readlines()
+# Strip newline characters from each line and create a list
+comments = [linez.strip() for linez in zan]
+
+
+def test_has_title(page: Page):
+
+    y = 3 
+
+    list_of_username = ['user', 'user', 'user', 'user']
+    x = 275
+    z = 275
+    while (y < 4):
+
+                
+        page.goto("https://reddit.com")
+        page.get_by_role("link", name="Log In").click()
+        page.locator("input[name=\"username\"]").click()
+        page.locator("input[name=\"username\"]").fill(list_of_username[y])
+        page.locator("input[name=\"password\"]").click()
+        page.locator("input[name=\"password\"]").fill("your password would go here")
+        page.get_by_role("button", name="Log In").click()
+
+
+        page.get_by_role("link", name="").click()
+        
+        z = z + 15
+        with page.expect_popup() as page1_info:
+            page.frame_locator("iframe >> nth=2").get_by_label("Open chat in new window").click()
+            
+        while (x < z):      
+
+            y = random.randint(5000, 12000)
+            zy = random.randint(5000, 12000)
+            page1 = page1_info.value
+            page1.locator("rs-rooms-nav div").filter(has_text="Chats Chat filter trigger").get_by_role("link").click()
+            page1.get_by_label("*").fill(usernames[x])
+
+            page1.locator("#users").get_by_role("img").nth(1).click()
+            page1.get_by_role("button", name="Start Chat").click()
+            page1.get_by_placeholder("Message").fill(comments[x])
+            page.wait_for_timeout(zy)
+
+            page1.get_by_role("button", name="Send message").click()
+            page.wait_for_timeout(y)
+            x = x + 1
+        y = y + 1    
+
+    # ------
