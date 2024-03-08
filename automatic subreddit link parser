@@ -1,0 +1,25 @@
+from bs4 import BeautifulSoup
+
+# Words to filter out
+words_to_filter = ["user", "about", "redgifs", "imgur"]
+
+# Assuming your HTML file is named "example.html"
+with open("Blowjobs.html", "r", encoding="utf-8") as file:
+    html_content = file.read()
+
+# Parse the HTML content with the 'lxml' parser
+soup = BeautifulSoup(html_content, "lxml")
+
+# Open a text file to write the output
+with open("output.txt", "w", encoding="utf-8") as output_file:
+    # Find all <a rel> tags
+    a_rel_tags = soup.find_all("a", attrs={"rel": True})
+
+    # Extract href attribute from each <a rel> tag
+    for tag in a_rel_tags:
+        href = tag.get("href")
+        # Check if href contains any of the words to filter out
+        if not any(word in href for word in words_to_filter):
+            output_file.write("{}\n".format(href))
+
+print("Output written to output.txt")
